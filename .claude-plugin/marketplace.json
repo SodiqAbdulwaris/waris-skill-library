@@ -1,0 +1,20 @@
+{
+  "name": "waris-skill-library",
+  "owner": {
+    "name": "Waris"
+  },
+  "metadata": {
+    "description": "Personal engineering-practice skill library, built through an interview-driven personalization process rather than copied from other repos"
+  },
+  "plugins": [
+    {
+      "name": "waris-skill-library",
+      "source": "./",
+      "description": "24 skills covering UI/UX design, system design, clean code, workflows, security, error handling, performance, testing, dependencies, database, documentation, deployment, and marketing research",
+      "version": "1.0.0",
+      "category": "workflow",
+      "tags": ["skills", "engineering-practices", "personal", "workflow"],
+      "strict": false
+    }
+  ]
+}

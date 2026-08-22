@@ -1,0 +1,12 @@
+{
+  "name": "waris-skill-library",
+  "version": "1.0.0",
+  "description": "Personal engineering-practice skill library covering UI/UX, system design, clean code, workflows, security, and more, built through an interview-driven personalization process",
+  "author": {
+    "name": "Waris"
+  },
+  "repository": "https://github.com/SodiqAbdulwaris/waris-skill-library",
+  "license": "MIT",
+  "keywords": ["skills", "engineering-practices", "personal", "workflow"],
+  "skills": ["./skills/"]
+}

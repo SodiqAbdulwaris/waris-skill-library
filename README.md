@@ -60,32 +60,58 @@ A personal library of engineering-practice skills, built through an interview-dr
 
 ## Using this library
 
-### Claude Code (native)
+### Claude Code
+
+**As a plugin (recommended):**
+
+```
+/plugin marketplace add SodiqAbdulwaris/waris-skill-library
+/plugin install waris-skill-library
+```
+
+**Or manually:**
 
 ```bash
-git clone <this-repo-url>
+git clone https://github.com/SodiqAbdulwaris/waris-skill-library.git
 cp -r waris-skill-library/skills/* ~/.claude/skills/
 ```
 
-Claude Code discovers skills under `~/.claude/skills/<name>/SKILL.md` automatically — no further setup.
+### Codex
 
-### Using this library from other agents
+Codex's plugin marketplace reads the same `.claude-plugin/` manifest:
 
-A `SKILL.md` is portable content (YAML frontmatter + markdown) — nothing about it is Claude-specific. What differs per tool is only *where it looks* for instruction files. This repo ships adapters for that:
+```bash
+codex plugin marketplace add SodiqAbdulwaris/waris-skill-library
+codex plugin add waris-skill-library@waris-skill-library
+```
 
-- **`AGENTS.md`** (repo root) — read automatically by Codex and a growing list of AGENTS.md-aware tools the moment this repo is opened as a project. Consolidates all skills as standing instructions.
-- **`.opencode/instructions/`** — one file per skill, in OpenCode's native instruction-loading location.
-- **`.cursor/rules/`** — one `.mdc` file per skill for Cursor's rules system.
+Codex also reads `AGENTS.md` automatically for any project this repo is opened in, independent of the plugin install.
 
-For a tool without a native adapter here (Antigravity, Gemini CLI, etc.), open this repo directly — most agentic tools will read `AGENTS.md` even without a dedicated adapter, and the full skill text is always available under `skills/<name>/SKILL.md` for manual reference or copy-paste into that tool's own config.
+### OpenCode
+
+Clone the repo, then point OpenCode's config at it — `.opencode/opencode.json` already does this (`skills.paths` → `../skills`, `instructions` → `AGENTS.md`). Open the repo as an OpenCode project, or merge those two keys into your own `opencode.json`.
+
+### Antigravity
+
+```bash
+agy plugin import claude
+```
+
+picks up the plugin once it's installed in Claude Code (above) — Antigravity's importer looks for registered Claude Code plugins, not loose skill folders. If `agy plugin install` supports marketplace refs directly in your version, `agy plugin install waris-skill-library@waris-skill-library` after `codex`-style marketplace registration is worth trying too — verify against your installed `agy` version, syntax may vary by release.
+
+### Any other tool
+
+A `SKILL.md` is portable content (YAML frontmatter + markdown) — nothing about it is Claude-specific. Most agentic tools without a dedicated adapter here will still read `AGENTS.md` if it's a supported convention for them, or the full skill text is always available under `skills/<name>/SKILL.md` for manual reference or copy-paste into that tool's own config.
 
 ## Structure
 
 ```
 skills/<skill-name>/SKILL.md   canonical source, one per skill
 AGENTS.md                      generated — Codex / AGENTS.md-aware tools
-.opencode/instructions/        generated — OpenCode
-.cursor/rules/                 generated — Cursor
+.cursor/rules/*.mdc            generated — Cursor
+.claude-plugin/                plugin manifest — Claude Code + Codex marketplace install
+.opencode/opencode.json        static config — points OpenCode at skills/ directly
+scripts/regen_adapters.py      regenerates AGENTS.md + .cursor/rules/ from skills/
 ```
 
-`AGENTS.md` and the `.opencode`/`.cursor` adapters are generated from `skills/*/SKILL.md` — treat the `skills/` directory as the source of truth and regenerate the adapters after editing a skill, rather than editing the adapters directly.
+Run `python scripts/regen_adapters.py` after adding, editing, or removing a skill to keep `AGENTS.md` and `.cursor/rules/` in sync. `.claude-plugin/` and `.opencode/opencode.json` point at the `skills/` directory itself, so they don't need regenerating when skills change — only if the repo is renamed or moved.
