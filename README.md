@@ -78,7 +78,7 @@ cp -r waris-skill-library/skills/* ~/.claude/skills/
 
 ### Codex
 
-Codex's plugin marketplace reads the same `.claude-plugin/` manifest:
+Codex's plugin marketplace reads the same `.claude-plugin/` manifest. Verified working:
 
 ```bash
 codex plugin marketplace add SodiqAbdulwaris/waris-skill-library
@@ -93,11 +93,14 @@ Clone the repo, then point OpenCode's config at it — `.opencode/opencode.json`
 
 ### Antigravity
 
+The `agy` CLI's `import claude` only picks up plugins already registered in Claude Code, and its `plugin install` doesn't take a marketplace ref the way Codex's does — it wants a local directory. Verified working:
+
 ```bash
-agy plugin import claude
+git clone https://github.com/SodiqAbdulwaris/waris-skill-library.git
+agy plugin install ./waris-skill-library
 ```
 
-picks up the plugin once it's installed in Claude Code (above) — Antigravity's importer looks for registered Claude Code plugins, not loose skill folders. If `agy plugin install` supports marketplace refs directly in your version, `agy plugin install waris-skill-library@waris-skill-library` after `codex`-style marketplace registration is worth trying too — verify against your installed `agy` version, syntax may vary by release.
+Confirm with `agy plugin list` — it should show `waris-skill-library` with `"components": ["skills"]`.
 
 ### Any other tool
 
