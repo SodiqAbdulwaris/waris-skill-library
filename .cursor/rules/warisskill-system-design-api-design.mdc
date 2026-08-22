@@ -1,0 +1,116 @@
+---
+description: Use when designing or reviewing an API — REST endpoint shape, status codes, response format, pagination, error responses, or versioning strategy. Trigger when creating new endpoints, reviewing an existing API contract, or when choosing between REST and GraphQL for a new project. Applies at the single-service level — for how a service's internal business logic is structured, see warisskill-system-design-domain-modeling; for inter-service API contracts in a distributed system, see warisskill-system-design-distributed-patterns.
+alwaysApply: false
+---
+
+
+# API Design
+
+## REST vs GraphQL: decide by consumer shape
+
+- **REST by default** — single web app, simple CRUD-shaped resources,
+  straightforward client needs.
+- **GraphQL** when there are multiple/diverse consumers (e.g. mobile +
+  web hitting the same backend with different data needs) where flexible
+  querying avoids either over-fetching or a proliferation of
+  purpose-built REST endpoints.
+- Don't default to GraphQL for a single-consumer CRUD app just because
+  it's more capable — the extra schema/resolver machinery isn't earning
+  its cost there.
+
+## REST resource design
+
+```
+# Resources are nouns, plural, kebab-case
+GET    /api/users
+GET    /api/users/:id
+POST   /api/users
+PATCH  /api/users/:id
+DELETE /api/users/:id
+
+# Sub-resources for ownership
+GET    /api/users/:id/orders
+
+# Verbs only for actions that don't map to CRUD
+POST   /api/orders/:id/cancel
+```
+
+No verb in the URL for CRUD operations. No versioned prefix (see
+Versioning below) until it's actually needed.
+
+## Status codes — always semantic, never 200-for-everything
+
+```
+200 OK / 201 Created (with Location header) / 204 No Content
+400 Bad Request        — malformed request
+401 Unauthorized       — missing/invalid auth
+403 Forbidden          — authenticated, not authorized
+404 Not Found
+409 Conflict           — duplicate/state conflict
+422 Unprocessable Entity — semantically invalid data
+429 Too Many Requests
+500 Internal Server Error — never expose internals in the message
+```
+
+Never return `200` with a `success: false` body — the HTTP status code
+carries that meaning; don't duplicate it in the payload.
+
+## Response format: envelope with data wrapper
+
+Default response shape, always:
+
+```json
+// Success
+{ "data": { ... }, "meta": { ... }, "links": { ... } }
+
+// Collection
+{ "data": [...], "meta": { "total": 142, "page": 1, "per_page": 20 } }
+
+// Error
+{ "error": { "code": "validation_error", "message": "...", "details": [...] } }
+```
+
+Apply this consistently even for internal-only APIs — it costs nothing
+extra to set up and means pagination/metadata can be added later without
+a breaking response-shape change.
+
+## Pagination
+
+- **Offset-based** (`?page=2&per_page=20`) for admin dashboards and
+  smaller datasets — simple, supports jump-to-page.
+- **Cursor-based** (`?cursor=...&limit=20`) for anything public-facing,
+  infinite scroll, or large/growing datasets — consistent performance,
+  stable under concurrent inserts.
+- Default to cursor for public APIs, offset for internal admin-style
+  views — don't use offset pagination on a dataset expected to grow large
+  or be publicly exposed.
+
+## Error responses
+
+Field-level detail on validation failures, always machine-readable
+(`code`) plus human-readable (`message`):
+
+```json
+{
+  "error": {
+    "code": "validation_error",
+    "message": "Request validation failed",
+    "details": [{ "field": "email", "message": "Must be a valid email address", "code": "invalid_format" }]
+  }
+}
+```
+
+## Versioning: skip until a breaking change actually ships
+
+No `/v1/` prefix by default — don't pay that cost upfront. Introduce
+versioning only when a real breaking change needs to go out while
+existing consumers keep working. At that point, URL-based versioning
+(`/api/v2/...`) is the default choice — most widely understood, simplest
+to route.
+
+## Limitations
+
+- This is single-service API design. Contract design between services in
+  a distributed system (schema evolution across service boundaries,
+  backward-compat guarantees for internal consumers) is covered by
+  `warisskill-system-design-distributed-patterns` instead.

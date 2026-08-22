@@ -1,0 +1,68 @@
+---
+description: Use when setting up or extending the styling foundation of a web project — choosing/configuring a component library, defining color/radius/font tokens, deciding token naming, or wiring up dark mode. Trigger on new project setup, 'make this not look like default shadcn,' theming work, or when a PR introduces raw hex/px values that should be tokens instead. Web stack only (Tailwind + shadcn/Radix-style) — for native mobile/desktop platform theming see the platform-specific skills, and for choosing the overall aesthetic mode (minimal/dense/bold) see warisskill-ui-ux-visual-design-taste, which this skill's customization step should follow.
+alwaysApply: false
+---
+
+
+# Design Systems & Tokens
+
+## Stack default
+
+Tailwind + a component library on top (shadcn/Radix). Don't reach for
+plain hand-rolled CSS variables or a different utility framework unless the
+project already committed to one — this is the default, not a per-project
+decision.
+
+## Immediately after scaffolding: reskin before shipping anything
+
+Unmodified shadcn/Radix defaults (the default gray + violet/blue accent,
+default radius, default font stack) read as generic AI-generated output.
+Before writing any feature code:
+
+1. Pick an accent color (ties to whatever mode `warisskill-ui-ux-visual-design-taste`
+   selected — dense/internal can stay closer to neutral, bold/consumer
+   should commit to something with actual character).
+2. Pick a border-radius value and apply it project-wide via the theme
+   config, not per-component.
+3. Pick a font — system font stack is a valid choice, but make it a
+   *choice*, not the leftover default.
+
+This is not optional polish to defer — do it in the same pass as project
+setup, before the first real screen is built.
+
+## Token structure: two-tier, semantic aliasing primitives
+
+Two layers, always:
+
+- **Primitive tokens** — the raw scale (`--green-500`, `--gray-100`, etc.),
+  source of truth for actual values.
+- **Semantic tokens** — named by role, referencing primitives (`--success`,
+  `--surface-primary`, `--border-subtle`). Components consume semantic
+  tokens, never primitives directly.
+
+This survives palette/rebrand changes without touching component code, and
+makes dark-mode remapping (below) a token-file change instead of a
+find-and-replace across components.
+
+## Spacing scale
+
+No personal override — Tailwind's default scale is the default. Don't
+introduce a custom spacing scale unless a specific project's grid genuinely
+requires it; that's added complexity with no established payoff here.
+
+## Dark mode: day-one, not retrofitted
+
+Every semantic token gets both a light and dark value from the start —
+defined together in the same pass, not added later as a follow-up task.
+When picking a component or writing a new one, verify both modes render
+correctly before considering it done, the same way you'd verify a
+responsive breakpoint.
+
+## Limitations
+
+- This is the web (Tailwind/shadcn-style) default. It does not apply to
+  React Native/Expo, SwiftUI, Jetpack Compose, or desktop-native theming —
+  those need their own platform-specific token approach.
+- If a project arrives with an existing, different styling stack already
+  established, follow it — this skill describes what to reach for on a
+  blank slate, not a mandate to migrate existing projects.

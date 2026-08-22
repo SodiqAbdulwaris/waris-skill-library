@@ -1,0 +1,87 @@
+---
+description: Use when writing code that can fail — external calls, parsing, database operations, anything with a real failure mode — and when deciding how a failure gets surfaced (logs, user-facing message, API error shape). Trigger on any new error type, catch block, retry logic, or API error response. Pairs with warisskill-system-design-api-design's error response format and warisskill-security-practices' rule against leaking internals in error messages.
+alwaysApply: false
+---
+
+
+# Error Handling & Observability
+
+## Core principles (non-negotiable)
+
+1. **Fail fast and loudly** — surface errors where they occur, don't bury
+   them three layers deep.
+2. **Typed errors over string messages** — errors are structured values,
+   not just message strings to pattern-match against.
+3. **User messages ≠ developer messages** — friendly text to the user,
+   full context (stack, request details) in logs only. Never expose
+   internals externally (ties to `warisskill-security-practices`).
+4. **Never swallow errors silently** — every `catch` either handles,
+   re-throws, or logs. An empty catch block is always wrong.
+5. **Errors are part of the API contract** — every error code a client
+   can receive gets documented, same envelope shape as
+   `warisskill-system-design-api-design`.
+
+## Style: throw/catch as default, Result pattern for expected failures
+
+- **Throw/catch with typed error classes** is the default for unexpected
+  or truly exceptional failures — a hierarchy rooted in one `AppError`
+  base (code, message, status, optional details) so `instanceof` checks
+  and a central API error handler both work cleanly.
+- **Result pattern** (`{ ok: true, value } | { ok: false, error }`) for
+  operations where failure is a normal, expected outcome — parsing,
+  external API calls, anything where "this commonly fails and the caller
+  needs to branch on it" is true. Don't apply Result-pattern ceremony
+  universally; reserve it for genuinely expected-failure operations.
+
+```typescript
+export class AppError extends Error {
+  constructor(
+    message: string,
+    public readonly code: string,
+    public readonly statusCode: number = 500,
+    public readonly details?: unknown,
+  ) {
+    super(message)
+    this.name = this.constructor.name
+    Object.setPrototypeOf(this, new.target.prototype)
+  }
+}
+
+export class NotFoundError extends AppError {
+  constructor(resource: string, id: string) {
+    super(`${resource} not found: ${id}`, 'NOT_FOUND', 404)
+  }
+}
+```
+
+A central API error handler maps `AppError` subclasses to the
+response envelope; unknown/unexpected errors get a generic 500 with a
+logged (not exposed) stack trace.
+
+## Retries and circuit breakers
+
+For unreliable external dependencies: retry transient failures with
+backoff, but cap retries and fail loudly once exhausted — a silent
+infinite retry loop is worse than a fast, visible failure. Reach for a
+circuit breaker only when a dependency's outages are frequent enough that
+retry-storming it makes things worse.
+
+## Observability: structured logging, no dedicated service yet
+
+No third-party error-tracking service by default at this scale —
+structured logs (not bare `console.log` strings) with enough context to
+debug from: error code, relevant IDs, request context. Log at the point
+the error is handled, not redundantly at every layer it passes through.
+
+Revisit this default (Sentry or platform-native equivalent) once a
+project has real production traffic where errors need to be triaged
+without direct log access, or ships to end users where "someone tells me
+it's broken" isn't a fast enough feedback loop.
+
+## Limitations
+
+- This covers application-level error handling and basic observability.
+  Distributed tracing, SLO/alerting infrastructure, and dedicated
+  monitoring setup are out of scope until
+  `warisskill-system-design-distributed-patterns`'s triggers are actually
+  met.

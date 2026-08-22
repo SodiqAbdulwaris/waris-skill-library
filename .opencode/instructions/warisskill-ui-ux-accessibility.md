@@ -1,0 +1,76 @@
+---
+name: warisskill-ui-ux-accessibility
+description: >
+  Use whenever building or reviewing any interactive UI, on any platform
+  (web, iOS, Android, desktop) — this is a non-negotiable baseline, not an
+  optional pass. Trigger on any new component, form, modal, navigation
+  element, or icon-only control, and on any PR/change that touches
+  markup, styling, or interaction. Also trigger when asked to review or
+  audit a UI. Do not defer this to "later" or treat it as separate from
+  the initial build — build to WCAG 2.2 AA the first time, not as cleanup.
+---
+
+# Accessibility (WCAG 2.2 AA — non-negotiable baseline)
+
+This is not best-effort. WCAG 2.2 Level AA is the floor on every project,
+every platform, from the first version of a component — not a follow-up
+audit pass. If a shortcut would violate this baseline, it is not an
+available shortcut.
+
+## Build-time checklist (apply while writing the component, not after)
+
+- **Semantic elements first.** A `<button>`, not a `<div>` with an onClick.
+  A `<nav>`, `<label>`, `<table>` — reach for the native element before a
+  custom role. Same principle cross-platform: native SwiftUI/Compose
+  components carry accessibility traits for free; custom-drawn ones don't.
+- **Contrast**: 4.5:1 for normal text, 3:1 for large text/UI elements —
+  check this when picking token colors (ties into
+  `warisskill-ui-ux-design-systems-tokens`), not after the palette ships.
+- **Target size**: minimum 24x24 CSS px (web) / 44x44pt (native) for
+  anything tappable.
+- **Keyboard/focus**: every interactive element reachable by keyboard, with
+  a visible focus indicator. Modals trap focus while open and release it
+  cleanly on close (Escape key or explicit close control) — never let
+  keyboard focus leak to background content behind an open modal.
+- **Icon-only controls** always get a text label (`aria-label` / native
+  equivalent) — never ship an icon button with no accessible name.
+- **Never color-only meaning** — an error state needs more than a red
+  border (icon, text, or both).
+- **Dynamic content**: use `aria-live` (or platform equivalent) for status
+  updates that aren't tied to a user-initiated focus change.
+
+## Cross-platform mapping
+
+| Concern | Web | iOS (SwiftUI) | Android (Compose) |
+|---|---|---|---|
+| Label | `aria-label` / `<label>` | `.accessibilityLabel()` | `contentDescription` |
+| Hint | `aria-describedby` | `.accessibilityHint()` | `semantics { stateDescription }` |
+| Role | `role="button"` | `.accessibilityAddTraits(.isButton)` | `semantics { role = Role.Button }` |
+| Live region | `aria-live="polite"` | `.accessibilityLiveRegion(.polite)` | `semantics { liveRegion = ... }` |
+
+## Tooling
+
+No existing automated check in place — default to wiring in
+**eslint-plugin-jsx-a11y** on web/React projects (catches missing
+alt text, invalid ARIA, non-interactive-element-with-handler issues at
+lint time, near-zero ongoing effort) and spot-check with axe DevTools or
+Lighthouse's accessibility audit before considering a UI feature done.
+This is a floor, not a substitute for the build-time checklist above —
+linters don't catch focus-trap or keyboard-flow issues.
+
+## Anti-patterns to reject on sight
+
+- A `<div>`/`<span>` standing in for a button with no role or keyboard
+  handling.
+- A modal with no focus trap, or one that doesn't restore focus to its
+  trigger on close.
+- Redundant alt text ("Image of...", "Picture of...") — screen readers
+  already announce the element role.
+- Content that breaks or clips at 400% zoom / large text scaling.
+
+## Limitations
+
+- This skill does not cover legal compliance review (e.g. formal WCAG
+  conformance audits, VPATs) — it's the engineering baseline for building
+  accessible UI, not a substitute for a compliance sign-off if one is
+  contractually required.

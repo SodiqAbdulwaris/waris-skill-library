@@ -1,0 +1,62 @@
+---
+name: warisskill-ui-ux-responsive-multiplatform
+description: >
+  Use when a UI needs to work across screen sizes (responsive web layout)
+  or across platforms (web + React Native/Expo + SwiftUI + Jetpack Compose
+  + desktop). Trigger when starting layout for a new screen, when a
+  component needs breakpoint/viewport behavior, or when deciding whether a
+  cross-platform product should share one design language or go fully
+  platform-native. Pairs with warisskill-ui-ux-design-systems-tokens for
+  the underlying values and warisskill-ui-ux-visual-design-taste for the
+  aesthetic mode being adapted.
+---
+
+# Responsive & Multiplatform Design
+
+## Web responsiveness: mobile-first, fluid-first
+
+- **Mobile-first.** Design and build for the smallest viewport first, then
+  layer in complexity at larger sizes — not the reverse. Forces content
+  prioritization instead of cramming a desktop layout down.
+- **Fluid sizing (`clamp()`) where it fits**, fixed breakpoints as the
+  fallback. Type scale, spacing, and container widths should scale
+  smoothly with viewport via `clamp(min, preferred, max)` rather than
+  jumping at fixed breakpoints wherever that's practical. Fall back to
+  Tailwind's standard breakpoints (`sm`/`md`/`lg`/`xl`) for layout
+  restructuring that genuinely needs a hard switch (e.g. sidebar
+  collapsing to a bottom nav) — fluid sizing solves scaling, not
+  structural layout changes.
+- Don't invent a custom breakpoint set without a specific reason — the
+  framework defaults are the floor, same principle as the spacing-scale
+  decision in the tokens skill.
+
+## Cross-platform strategy: decide by product type, not by default
+
+No fixed rule — pick based on what the product actually is:
+
+| Product type | Strategy |
+|---|---|
+| Companion apps for one product (e.g. a SaaS with web + iOS + Android clients of the same service) | Shared design language: same tokens, same visual identity, same component vocabulary — but respect each platform's native interaction conventions (iOS swipe-back gesture, Android hardware back button, platform-standard navigation patterns). Don't force a web modal pattern onto iOS where a native sheet is expected. |
+| Platform-specific apps where users expect platform conventions (e.g. a utility app that should feel like it belongs on the device) | Fully platform-native idioms — iOS follows Apple HIG, Android follows Material, each platform's app looks and behaves like a first-party app for that OS. Cross-platform visual consistency is explicitly not the goal here. |
+| Ambiguous / early-stage | Default to shared design language — it's the safer starting point and can still respect platform navigation conventions; going fully platform-native from the start multiplies design work before it's clear the product needs that level of investment. |
+
+State which strategy applies at the start of a multi-platform project and
+hold it — don't drift between the two per-screen without the product-type
+signal above changing.
+
+## What never changes across platforms, regardless of strategy
+
+- Semantic token roles (`--success`, `--surface-primary`, etc.) should
+  resolve to platform-appropriate values but keep the same *names* and
+  *purpose* across web/iOS/Android — this is what makes design decisions
+  portable even under a fully-native strategy.
+- Accessibility baseline (`warisskill-ui-ux-accessibility`) applies
+  identically on every platform — native idiom differences never excuse
+  skipping contrast, target size, or focus/keyboard-equivalent handling.
+
+## Limitations
+
+- This skill covers layout adaptation and platform strategy, not the
+  platform-specific implementation details (SwiftUI layout system,
+  Compose modifiers, CSS Grid/Flexbox specifics) — those belong to
+  platform-specific skills.

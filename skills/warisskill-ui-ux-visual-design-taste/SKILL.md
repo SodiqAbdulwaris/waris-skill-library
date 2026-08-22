@@ -1,0 +1,87 @@
+---
+name: warisskill-ui-ux-visual-design-taste
+description: >
+  Use whenever a UI needs a visual direction decided with no designer, brand
+  guide, or existing design system to follow — a new project's first screen,
+  a prototype that needs to look intentional, or when asked "make this look
+  good" with no other constraints. Also trigger when an existing project
+  already has a UI library or design system in place and the instinct would
+  otherwise be to override its taste. Not for accessibility, motion, design
+  tokens, or responsive-breakpoint decisions specifically — those are
+  separate skills; this one only decides the aesthetic mode and how
+  strictly to hold it.
+---
+
+# Visual/Brand Design Taste
+
+There is no single fixed aesthetic here — the right look depends on the
+project. What's fixed is the *decision process*: read three signals, pick a
+mode, then apply that mode's heuristics consistently instead of re-deciding
+per-screen.
+
+## Step 0: is taste even yours to decide?
+
+Check first, before anything else:
+
+- **An existing UI library/design system is already in the project**
+  (shadcn, Material, Ant, a custom token set, a Figma-derived component
+  set)? Follow it. Its taste wins over anything below — do not fight an
+  established system with personal preference.
+- **A brand guide or explicit direction was given**? Follow it, full stop.
+
+Only fall through to the steps below when neither exists.
+
+## Step 1: read the three signals
+
+| Signal | Pushes toward Dense | Pushes toward Minimal | Pushes toward Bold |
+|---|---|---|---|
+| **Audience** | Internal/B2B tool, power users | Either | Consumer-facing, marketing, first impression matters |
+| **Content volume** | Tables, dashboards, lots of data per screen | Low — mostly whitespace and a few key elements | Low-to-medium, but wants to make an impact |
+| **Product stage** | N/A (dense is orthogonal to stage) | Prototype/MVP — fast and clean beats crafted | Polished launch — worth the visual investment |
+
+These aren't exclusive — a project can be "dense B2B dashboard, still at MVP
+stage" (dense + minimal execution) or "consumer landing page at launch"
+(bold). Weigh audience and content volume as the primary axis, stage as a
+modifier on how much polish to invest, not which mode to pick.
+
+## Step 2: apply the mode's heuristics
+
+**Dense mode** (admin panels, dashboards, internal tools, data-heavy views):
+- Optimize for information-per-screen and scan speed over visual breathing
+  room. Tight but consistent spacing, not whitespace-starved chaos.
+- Typography does the hierarchy work — weight and size differences, not
+  decoration.
+- Color is functional (status, severity, category) before it's aesthetic.
+
+**Minimal mode** (default when unsure, prototypes, tools where the content
+is the product):
+- Generous whitespace, restrained color — most of the UI is neutral, one
+  accent color carries emphasis and calls-to-action.
+- Fewer, more deliberate elements over many small decorative ones. If an
+  element doesn't clarify hierarchy or enable an action, cut it.
+- Borders/subtle contrast over heavy shadows for separation.
+
+**Bold mode** (consumer/marketing surfaces, first impressions, launches):
+- Type scale and color are allowed to carry personality — bigger jumps in
+  scale, more saturated or higher-contrast color choices than minimal mode
+  would use.
+- Still needs a hierarchy and a point of restraint — bold everywhere reads
+  as noise. Pick one or two moments (hero, key CTA) to spend the boldness
+  on rather than spreading it evenly.
+
+## Step 3: hold the mode
+
+Once picked, the mode is a constraint for the rest of the session/project —
+don't drift between dense and bold screen-to-screen without a reason tied to
+the signals above (e.g. a dense admin tool can still have a bold marketing
+landing page in front of it — that's two modes for two different surfaces,
+each internally consistent, not indecision).
+
+## Limitations
+
+- This skill decides aesthetic *mode*, not concrete numbers — spacing
+  scales, exact palettes, and type ramps come from the design-systems and
+  tokens skill once one exists.
+- If the user pushes back on a mode choice, that's signal to update this
+  skill's heuristics, not just override once — flag it back so the
+  decision table can be corrected.

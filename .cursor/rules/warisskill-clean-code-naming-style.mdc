@@ -1,0 +1,80 @@
+---
+description: Use when writing or renaming variables, functions, types, or files in any language — naming casing conventions and function-naming shape. This is narrower than ponytail (which governs whether code should exist and how little of it there should be) — this skill only governs what things are called once they're being written. Immutability and simplification are ponytail's territory, not this skill's.
+alwaysApply: false
+---
+
+
+# Naming & Style Conventions
+
+Scope note: KISS/DRY/YAGNI, "does this need to exist," and simplification
+are `ponytail`'s job — always active, don't duplicate it here. This skill
+only covers naming and casing.
+
+## Casing: idiomatic per language, always
+
+Never import one language's naming convention into another. Follow the
+ecosystem, every time:
+
+| Language/context | Variables/functions | Types/classes | Constants |
+|---|---|---|---|
+| JS/TS | camelCase | PascalCase | UPPER_SNAKE_CASE (true constants) or camelCase |
+| Swift | camelCase | PascalCase | camelCase (Swift convention, not UPPER_SNAKE) |
+| Kotlin | camelCase | PascalCase | UPPER_SNAKE_CASE for top-level/companion consts |
+| Python | snake_case | PascalCase | UPPER_SNAKE_CASE |
+| Go | camelCase (unexported) / PascalCase (exported) | PascalCase | camelCase or PascalCase per export need |
+| Rust | snake_case | PascalCase | UPPER_SNAKE_CASE |
+| CSS/HTML/URLs | kebab-case | — | — |
+
+If a project's existing codebase already deviates from the idiomatic
+convention, match the existing codebase over the table — consistency
+within a project wins over the abstract ideal.
+
+## Function naming: verb-noun shape
+
+Functions describe an action — name them as one:
+
+```
+// GOOD
+fetchMarketData(marketId)
+calculateSimilarity(a, b)
+isValidEmail(email)          // predicate: is/has/can prefix
+
+// BAD
+market(id)          // noun only, unclear it's an action
+similarity(a, b)     // same
+email(e)             // ambiguous — getter? validator? sender?
+```
+
+Boolean-returning functions/variables get an `is`/`has`/`can`/`should`
+prefix (`isAuthenticated`, `hasPermission`) — the name should make the
+boolean nature obvious without checking the return type.
+
+## Variable naming: descriptive over short
+
+No single-letter or abbreviated names outside genuinely conventional scope
+(loop indices `i`/`j` in a tight loop, `e` for a caught exception, `_` for
+an intentionally unused value). Everything else earns a name that states
+what it holds:
+
+```
+// GOOD
+const marketSearchQuery = 'election'
+const isUserAuthenticated = true
+
+// BAD
+const q = 'election'
+const flag = true
+```
+
+## File naming
+
+Match the ecosystem's own file-naming convention (kebab-case for most
+JS/TS/web projects, snake_case for Python, PascalCase for Swift/Kotlin
+type-per-file) — same idiomatic-per-language principle as casing above,
+not a fixed personal rule.
+
+## Limitations
+
+- This governs naming only. For whether a variable/function should be
+  immutable, for simplification, and for whether code should exist at
+  all, defer to `ponytail` — don't re-litigate those concerns here.

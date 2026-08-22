@@ -1,0 +1,52 @@
+---
+description: Use before declaring any feature or fix complete — the definition-of-done checklist and the hard rule against claiming success without fresh evidence. Trigger on any moment about to state 'done,' 'tests pass,' 'this works,' or similar, and before any commit/PR. This governs what gates completion; warisskill-workflows-planning governs what happens before implementation starts.
+alwaysApply: false
+---
+
+
+# Feature Delivery Workflow
+
+## Definition of done
+
+Before calling a feature or fix complete, all of the following that apply:
+
+1. **Build/typecheck passes** — compiles or type-checks cleanly.
+2. **Linter clean** on changed files.
+3. **Relevant tests pass** — whatever tests exist for the touched logic
+   under `warisskill-workflows-tdd`'s coverage floor, run fresh.
+4. **Manually verified running** — not just for UI (already a standing
+   global rule to check UI in a browser), but for any feature: hit the
+   actual API endpoint, run the actual CLI command, exercise the actual
+   code path. A build that compiles and tests that pass don't prove the
+   feature does what was asked — only running it does.
+
+## The hard rule: no completion claims without fresh evidence
+
+Never state a status ("tests pass," "build succeeds," "this works," "done")
+without having actually run that exact check in this message. Not a
+previous run, not "should pass now," not extrapolation from a partial
+check.
+
+```
+BEFORE claiming any status:
+1. Identify what command/action proves the claim
+2. Run it, fresh, in full
+3. Read the actual output/exit code
+4. Only then state the claim — with what was verified, not just "done"
+```
+
+Red flags that mean stop and verify instead of proceeding: "should work
+now," "probably fine," expressing satisfaction before checking, about to
+commit/push without having just verified, trusting a subagent's own
+success report without checking its actual diff/output.
+
+This is a hard rule, no exceptions for feeling confident or the change
+seeming trivial — a wrong "done" costs more than the few seconds a fresh
+check takes.
+
+## Limitations
+
+- This governs the completion gate, not implementation quality itself —
+  `/code-review` and the relevant `warisskill-*` skills for the domain
+  being touched (UI, API, etc.) cover what "good" looks like; this skill
+  only covers proving it's actually true before saying so.

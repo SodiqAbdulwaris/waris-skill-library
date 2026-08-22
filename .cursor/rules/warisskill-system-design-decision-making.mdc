@@ -1,0 +1,87 @@
+---
+description: Use when a genuinely significant, hard-to-reverse technical choice is being made — database engine, auth strategy, framework/major library swap, a boundary that's expensive to undo later. Trigger by noticing the decision moment yourself (a real alternative was weighed and rejected, or the user says 'we decided to...' / 'the reason we chose X over Y...'), not just by explicit request. Do NOT reach for this on routine or easily reversible decisions — most day-to-day architectural-flavored choices on solo/small-team work don't warrant a written record. Companion to warisskill-system-design-domain-modeling and warisskill-system-design-distributed-patterns — this skill governs whether a decision gets documented, not whether a pattern gets applied.
+alwaysApply: false
+---
+
+
+# Architecture Decision-Making
+
+## The bar for writing an ADR
+
+Most decisions, even ones that feel architectural in the moment, don't need
+a written record on solo/small-team work. Write one only when the decision
+is **hard to reverse** and **high blast-radius** — the kind of thing that,
+gotten wrong, costs a real rewrite or migration to fix:
+
+- Database/storage engine choice
+- Auth strategy (session vs JWT vs third-party provider)
+- A framework or major library swap
+- A boundary decision that's expensive to walk back (e.g. committing to a
+  monorepo vs polyrepo, picking a deployment model)
+
+Routine choices — which state management library, how a component is
+structured, most "we could do A or B" moments that are cheap to change
+later — get decided and moved on, not documented. Documenting everything is
+overhead nobody reads on a solo project; it becomes noise that hides the
+ADRs that actually matter.
+
+## When you notice a decision-moment: flag it, don't write yet
+
+Proactively — without being asked — when a hard-to-reverse choice is being
+made or was just made:
+
+1. Name the decision and why it clears the bar above.
+2. Ask whether it's worth recording before drafting anything.
+3. Only draft and write the ADR file after explicit confirmation. Never
+   create `docs/adr/` or write a file without that go-ahead.
+
+If the user says "ADR this" directly, skip the flagging step and go
+straight to drafting.
+
+## ADR format (when one is warranted)
+
+Lightweight Nygard-style format:
+
+```markdown
+# ADR-NNNN: [Decision Title]
+
+**Date**: YYYY-MM-DD
+**Status**: proposed | accepted | deprecated | superseded by ADR-NNNN
+
+## Context
+[2-5 sentences: the situation and constraints that forced this decision]
+
+## Decision
+[1-3 sentences: what was decided]
+
+## Alternatives Considered
+### Alternative: [Name]
+- **Why not**: [specific rejection reason]
+
+## Consequences
+### Positive
+- ...
+### Negative / Risks
+- ...
+```
+
+Keep it short — the value is *why*, not exhaustive documentation. A
+5-sentence ADR that captures the real reasoning beats a template fully
+filled out with filler.
+
+## Workflow
+
+1. If `docs/adr/` doesn't exist yet, ask before creating it (with a
+   `README.md` index).
+2. Assign the next number by scanning existing ADRs.
+3. Present the draft for review — write to `docs/adr/NNNN-title.md` only
+   after approval.
+4. Update the index.
+
+## Limitations
+
+- This governs *whether to document*, not the underlying technical
+  decision itself — the actual trade-off analysis for domain modeling or
+  distributed-systems choices lives in those skills.
+- If the project is a team project with established ADR conventions
+  already in place, follow the existing convention instead of this bar.

@@ -1,0 +1,71 @@
+---
+name: warisskill-testing-strategy
+description: >
+  Use when deciding what level of automated testing a feature needs beyond
+  unit-level TDD — whether it warrants an E2E test, and what the
+  integration-test bar is for a new API endpoint. Trigger when finishing a
+  critical user flow (auth, checkout, core happy path) or any new
+  endpoint. Complements warisskill-workflows-tdd (unit-level coverage
+  floor) — this skill is the layer above that: E2E and integration test
+  scope.
+---
+
+# Testing Strategy (E2E & Integration)
+
+## E2E: reserved for critical/high-stakes flows
+
+Every UI change already gets manually verified in a running browser (a
+standing global rule) — that catches most regressions during development.
+Automated E2E tests are for the smaller set of flows where a silent
+regression later would actually be expensive:
+
+- Authentication (login, signup, logout, password reset)
+- Checkout/payment flows
+- The core happy path of the product (the thing the product exists to do)
+
+Don't write E2E tests for every feature with UI interaction — that's
+duplicate coverage of what manual verification already caught, at high
+maintenance cost (E2E suites are the most expensive tests to keep green).
+
+## Integration tests: every API endpoint, no exceptions
+
+Higher bar than the general TDD coverage floor specifically for API
+endpoints — even a "simple" CRUD endpoint gets at least a basic
+integration test, because an endpoint is a contract boundary: it's the
+first thing an external client depends on, and it's cheap to break
+silently (a validation change, an auth check regression) without a test
+catching it. This is broader than `warisskill-workflows-tdd`'s
+"non-trivial logic only" floor — apply it here regardless of how simple
+the endpoint's logic looks.
+
+Minimum for an endpoint integration test: happy path returns expected
+shape/status, and at least one failure case (auth rejection, validation
+failure, or not-found) returns the correct error per
+`warisskill-system-design-api-design`'s error envelope.
+
+## E2E structure (Playwright, when one is warranted)
+
+```
+tests/
+├── e2e/
+│   ├── auth/login.spec.ts
+│   └── checkout/purchase-flow.spec.ts
+├── fixtures/
+└── playwright.config.ts
+```
+
+- **Page Object Model** for anything beyond a trivial single-page flow —
+  encapsulate selectors/actions in a page class so the test reads as
+  steps, not raw locator calls.
+- **`data-testid` selectors**, not text/CSS-class selectors — text and
+  styling change; test IDs are stable and make the selector's intent
+  explicit.
+- Wait on actual signals (`waitForResponse`, specific element visibility),
+  not fixed timeouts — a hardcoded `sleep()` is the top cause of flaky E2E
+  suites.
+
+## Limitations
+
+- This is scope/coverage strategy, not test-writing mechanics for every
+  framework — actual Playwright/Cypress syntax and CI wiring are
+  implementation detail once the scope above is decided.
