@@ -104,6 +104,12 @@ Full instructions: `skills/warisskill-workflows-tdd/SKILL.md`
 
 ## Engineering Practices
 
+### `documentation-architect`
+
+Creates, maintains, reviews, and evolves execution-grade software and product documentation including PRDs, SRSs, technical specifications, architecture documents, implementation plans, workflows, project plans, API specifications, database specifications, ADRs, test plans, security documentation, research documents, agent instructions, READMEs, and complete project documentation systems. Acts as a requirements engineer, product manager, senior engineer, systems architect, and technical writer depending on the document being produced. Operates in explicit modes (CREATE, UPDATE, REVIEW, AUDIT, REFACTOR, SYNCHRONIZE, GENERATE-SYSTEM) and uses adaptive questioning, requirement validation, decision analysis, project-wide consistency checking, traceability, and implementation-readiness validation. Designed so another AI coding agent can implement from the resulting documentation with minimal clarification.
+
+Full instructions: `skills/documentation-architect/SKILL.md`
+
 ### `warisskill-database-modeling-migrations`
 
 Use when creating or altering database schema, writing a migration, or designing a new table/relationship. Trigger on any DDL change, any ORM migration file, or schema design discussion. Migration safety rigor scales with project stage — see the gate below before reaching for zero-downtime ceremony on a pre-launch project.

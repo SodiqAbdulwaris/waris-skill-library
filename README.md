@@ -52,6 +52,12 @@ A personal library of engineering-practice skills, built through an interview-dr
 | [`warisskill-security-practices`](skills/warisskill-security-practices/SKILL.md) | Writing code that touches authentication, secrets, user input, database queries, or external requests — this is a coding- time baseline, not an audit-time-only concern. |
 | [`warisskill-testing-strategy`](skills/warisskill-testing-strategy/SKILL.md) | Deciding what level of automated testing a feature needs beyond unit-level TDD — whether it warrants an E2E test, and what the integration-test bar is for a new API endpoint. |
 
+### Documentation
+
+| Skill | What it decides |
+|---|---|
+| [`documentation-architect`](skills/documentation-architect/SKILL.md) | Execution-grade PRDs, SRSs, architecture docs, implementation plans, ADRs, and full project documentation systems — treats documentation as an executable spec another AI agent could implement from, with adaptive questioning, decision challenging, and cross-document consistency checking. Distinct from `warisskill-documentation-practices` (below), which is a lightweight code-level convention: when a README/API doc gets written at all, not how to author a full spec set. |
+
 ### Marketing
 
 | Skill | What it decides |
