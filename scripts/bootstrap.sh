@@ -28,7 +28,10 @@ fi
 
 echo "== Impeccable, for broader-than-Claude-Code coverage (Gemini/Codex/etc.) =="
 if have npx; then
-  npx impeccable install || true
+  # Must run from $HOME: it treats the CWD's own .cursor/.opencode dirs as
+  # "detected harnesses" and installs there at project scope if run from
+  # inside this repo, polluting it with its own agents/hooks/skills files.
+  (cd "$HOME" && npx impeccable install) || true
 fi
 
 echo "Done. Re-run this script any time to pick up updates to any of the above."

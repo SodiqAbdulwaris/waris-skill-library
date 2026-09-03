@@ -26,7 +26,11 @@ if (Have npx) {
 
 Write-Host "== Impeccable, for broader-than-Claude-Code coverage (Gemini/Codex/etc.) =="
 if (Have npx) {
-    npx impeccable install
+    # Must run from $HOME: it treats the CWD's own .cursor/.opencode dirs as
+    # "detected harnesses" and installs there at project scope if run from
+    # inside this repo, polluting it with its own agents/hooks/skills files.
+    Push-Location $HOME
+    try { npx impeccable install } finally { Pop-Location }
 }
 
 Write-Host "Done. Re-run this script any time to pick up updates to any of the above."
