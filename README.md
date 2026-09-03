@@ -34,6 +34,7 @@ A personal library of engineering-practice skills, built through an interview-dr
 
 | Skill | What it decides |
 |---|---|
+| [`warisskill-workflows-agent-log`](skills/warisskill-workflows-agent-log/SKILL.md) | Use at the end of any non-trivial piece of work — records it into an organized, cross-referenced `docs/agent-log/` trail (reviews, debugging, decisions, improvements, and more) instead of letting it live only in chat scrollback. |
 | [`warisskill-workflows-feature-delivery`](skills/warisskill-workflows-feature-delivery/SKILL.md) | Use before declaring any feature or fix complete — the definition-of-done checklist and the hard rule against claiming success without fresh evidence. |
 | [`warisskill-workflows-git`](skills/warisskill-workflows-git/SKILL.md) | Starting a new project's git setup, creating branches, writing commit messages, or bringing a feature branch up to date with main. |
 | [`warisskill-workflows-planning`](skills/warisskill-workflows-planning/SKILL.md) | Use before starting implementation on any non-trivial task — decides whether planning stays internal (silent task sequencing) or gets surfaced as an explicit checkpoint the user confirms before code gets written. |
@@ -49,8 +50,18 @@ A personal library of engineering-practice skills, built through an interview-dr
 | [`warisskill-documentation-practices`](skills/warisskill-documentation-practices/SKILL.md) | A README or project doc is explicitly requested (standing global rule: never create those unprompted), and use automatically whenever an API is being built or changed — API documentation is always-on, not request-gated. |
 | [`warisskill-error-handling-observability`](skills/warisskill-error-handling-observability/SKILL.md) | Writing code that can fail — external calls, parsing, database operations, anything with a real failure mode — and when deciding how a failure gets surfaced (logs, user-facing message, API error shape). |
 | [`warisskill-performance-optimization`](skills/warisskill-performance-optimization/SKILL.md) | A performance issue is suspected or reported, when profiling is needed, or when writing code that touches a known cheap-to-get-right performance floor (pagination, indexing, N+1 queries). |
+| [`warisskill-react-performance`](skills/warisskill-react-performance/SKILL.md) | Writing or reviewing React/React Native UI where render behavior matters — unnecessary re-renders, long lists, memoization calls, or janky typing/scroll. |
 | [`warisskill-security-practices`](skills/warisskill-security-practices/SKILL.md) | Writing code that touches authentication, secrets, user input, database queries, or external requests — this is a coding- time baseline, not an audit-time-only concern. |
 | [`warisskill-testing-strategy`](skills/warisskill-testing-strategy/SKILL.md) | Deciding what level of automated testing a feature needs beyond unit-level TDD — whether it warrants an E2E test, and what the integration-test bar is for a new API endpoint. |
+
+### Research
+
+| Skill | What it decides |
+|---|---|
+| [`warisskill-research-methodology`](skills/warisskill-research-methodology/SKILL.md) | The foundation for any research task — evaluating source credibility, triangulating claims, and calibrating claim strength to evidence. The other research skills below build on this rather than restate it. |
+| [`warisskill-research-academic`](skills/warisskill-research-academic/SKILL.md) | Literature reviews, finding and evaluating peer-reviewed work, systematic-style search discipline, and scholarly citation practice. |
+| [`warisskill-research-technical`](skills/warisskill-research-technical/SKILL.md) | Pre-implementation research — evaluating libraries and approaches, reading docs/source/RFCs, avoiding the version-staleness trap, and running a disciplined spike. |
+| [`warisskill-research-startup-feasibility`](skills/warisskill-research-startup-feasibility/SKILL.md) | Validating whether a new initiative — startup idea, product line, or internal build — is worth pursuing: market/competitive/technical/financial feasibility plus real-world validation, before `marketing-research` ever gets involved. |
 
 ### Documentation
 
@@ -63,6 +74,28 @@ A personal library of engineering-practice skills, built through an interview-dr
 | Skill | What it decides |
 |---|---|
 | [`marketing-research`](skills/marketing-research/SKILL.md) | Use this skill for any marketing research, product positioning, copywriting research, or audience profiling task. |
+
+## Bootstrap on a new machine
+
+This library is meant to be used alongside a few companion tools:
+[ponytail](https://ponytail.dev) (minimal-code coding ruleset),
+[Impeccable](https://impeccable.style) (anti-AI-slop design polish), and
+[Taste](https://www.tasteskill.dev) (anti-templated frontend generation).
+`scripts/bootstrap.sh` (or `scripts/bootstrap.ps1` on native Windows
+PowerShell) installs all of them, plus this library itself, globally for
+every coding agent it detects on the machine:
+
+```bash
+git clone https://github.com/SodiqAbdulwaris/waris-skill-library.git
+cd waris-skill-library
+./scripts/bootstrap.sh
+```
+
+On a new machine, this is also the thing to tell a fresh coding agent to
+do — "clone SodiqAbdulwaris/waris-skill-library and run its bootstrap
+script" is enough for it to pick up this whole setup, companion tools
+included, without re-deriving which ones or how. Safe to re-run any time
+to pick up updates.
 
 ## Using this library
 

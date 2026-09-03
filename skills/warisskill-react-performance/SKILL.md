@@ -1,0 +1,104 @@
+---
+name: warisskill-react-performance
+description: >
+  Use when writing or reviewing React (or React Native) UI where render
+  behavior matters — a component re-renders too often, a list is long,
+  typing/scroll feels janky, or someone reaches for useMemo/useCallback/
+  React.memo. Triggers on "this component re-renders too much," "should I
+  memoize this," long-list rendering, context-driven re-render storms, or
+  slow typing in a controlled input. This is narrower than
+  `warisskill-performance-optimization` — that skill owns the general
+  measure-first loop, Core Web Vitals, bundles, and backend/query work.
+  This one owns React's render model specifically. "Should this component
+  exist at all" is ponytail's territory, not this skill's.
+---
+
+# React Performance Patterns
+
+Scope note: the general MEASURE → IDENTIFY → FIX → VERIFY → GUARD loop,
+Core Web Vitals, bundle size, and query/N+1 work all live in
+`warisskill-performance-optimization` — don't re-litigate them here. This
+skill is only React's render model. The measure-first rule still applies:
+the profiler here is **React DevTools Profiler**, and memoization is not
+free, so don't add it blind.
+
+## The one mental model
+
+React re-renders a component when its own state changes, its props change,
+or a context it consumes changes — and by default that re-renders the
+entire subtree below it. Almost all "React perf" work is one of two moves:
+
+1. **Don't do expensive work on every render** (compute, allocate, sort).
+2. **Don't re-render a subtree that didn't actually change.**
+
+Everything below is an application of those two.
+
+## Proactive floor: cheap defaults, no profiler required
+
+Same tier as picking a semantic element in accessibility work — do these
+by default, they're free and expensive to retrofit:
+
+- **Stable keys.** Use a stable domain id as `key` for dynamic lists.
+  Never use the array index as key for a list that can reorder, insert, or
+  delete — it silently corrupts state and DOM identity.
+- **Colocate state as low as it will go.** State lives in the smallest
+  subtree that needs it; lifting it higher than necessary re-renders
+  everything in between on every change.
+- **Don't fabricate new props needlessly.** A fresh object/array/function
+  literal passed as a prop is a new reference every render — harmless for a
+  normal child, but it defeats a memoized one (see below).
+
+## Memoization: measure first, then decide
+
+`React.memo`, `useMemo`, and `useCallback` all trade comparison cost +
+memory + code complexity for skipped work. Default to **not** memoizing
+until the Profiler shows a real cost. When the Profiler does point here:
+
+| Tool | Use it when | Don't bother when |
+|---|---|---|
+| `React.memo(Component)` | A child re-renders often with unchanged props and its render is non-trivial | The child is cheap, or its props change on nearly every parent render anyway |
+| `useMemo(fn, deps)` | A computation in render is genuinely expensive (large sort/filter/derive), or you need a stable object/array reference for a memoized child or a dependency array | The value is a primitive or a cheap expression — memo overhead costs more than it saves |
+| `useCallback(fn, deps)` | You pass a function as a prop to a `React.memo` child, or as a dependency to another hook | Nothing downstream depends on the function's identity |
+
+Rule of thumb: `React.memo` on a child and `useCallback`/`useMemo` on the
+props you pass it **go together** — memoizing the child alone does nothing
+if you hand it a fresh function/object literal every render.
+
+## High-leverage patterns (the ones that actually move numbers)
+
+- **Virtualize long lists.** For lists past a few hundred rows, render only
+  what's on screen (`react-window` / `@tanstack/virtual`). This is usually
+  a bigger win than any amount of memoization, because the cost is the
+  number of mounted nodes, not the render function.
+- **Split context, or use a selector.** A single fat context re-renders
+  every consumer on any change. Split it into stable vs frequently-changing
+  contexts, or use a store with selector subscriptions (Zustand, Redux
+  `useSelector`) so a component only re-renders when *its* slice changes.
+- **Keep input responsive with transitions.** For an expensive update
+  driven by user input (filtering a big list as they type), keep the input
+  controlled and fast, and mark the expensive derived update with
+  `useTransition` / `useDeferredValue` so typing never blocks on it.
+- **Code-split heavy/rare subtrees** with `lazy` + `Suspense` (modals,
+  editors, charts, route boundaries) so they don't cost anything until
+  used.
+- **Push work to the server where the stack allows it** (React Server
+  Components / Next.js app router) — the cheapest client render is the one
+  that never ships to the client.
+
+## Common causes of unnecessary re-renders
+
+| Symptom | Likely cause | Fix |
+|---|---|---|
+| Whole page re-renders on one small change | State lifted too high | Colocate state lower |
+| Memoized child still re-renders | New object/array/function literal in its props | Memoize the prop with `useMemo`/`useCallback`, or pass primitives |
+| Every consumer re-renders together | One monolithic context | Split context / selector subscription |
+| Typing lags in a big filtered view | Expensive derive runs synchronously on each keystroke | `useDeferredValue` / `useTransition` |
+| Long list scrolls poorly | Thousands of mounted nodes | Virtualize |
+
+## Limitations
+
+- Not the general performance loop, Web Vitals, bundle analysis, or backend
+  query/N+1 work — those are `warisskill-performance-optimization`.
+- Not a license to memoize preemptively; memo without a Profiler-shown cost
+  is the premature optimization that skill warns against.
+- Whether a component/abstraction should exist at all is ponytail's call.

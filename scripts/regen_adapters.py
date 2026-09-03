@@ -30,10 +30,11 @@ CATEGORY_RULES = [
     ("warisskill-system-design-", "System Design"),
     ("warisskill-clean-code-", "Clean Code"),
     ("warisskill-workflows-", "Workflows"),
+    ("warisskill-research-", "Research"),
 ]
 CATEGORY_ORDER = [
     "UI/UX Design", "System Design", "Clean Code", "Workflows",
-    "Engineering Practices", "Marketing",
+    "Engineering Practices", "Research", "Marketing",
 ]
 
 
@@ -88,6 +89,11 @@ def write_agents_md(skills):
         "These skills encode specific working decisions made through an "
         "interview process — apply them as defaults, not suggestions, "
         "when their trigger condition matches the current task.", "",
+        "If this machine doesn't have this library or its companion tools "
+        "(ponytail, Impeccable, Taste) installed yet, run "
+        "`scripts/bootstrap.sh` (or `scripts/bootstrap.ps1` on Windows "
+        "PowerShell) from the repo root to install all of them globally "
+        "before proceeding.", "",
     ]
     for cat in CATEGORY_ORDER:
         if cat not in groups:

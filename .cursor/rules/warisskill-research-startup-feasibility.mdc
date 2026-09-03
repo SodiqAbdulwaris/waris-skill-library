@@ -1,0 +1,109 @@
+---
+description: Use when validating whether a new initiative is worth pursuing — a startup idea, a new product line, or an internal build — before committing real time to it. Triggers on 'is this idea worth pursuing,' 'feasibility check,' 'should we build this,' 'market size for,' or any go/no-go call on something not yet started. Builds on `warisskill-research-methodology` for source discipline. Distinct from `marketing-research`: this skill answers whether to proceed at all; marketing-research answers how to position and sell it once the answer is yes. Distinct from `warisskill-system-design-decision-making`, which records a significant technical choice as an ADR — this skill feeds that one the evidence for a go/no-go call worth recording.
+alwaysApply: false
+---
+
+
+# Startup & Initiative Feasibility Research
+
+Builds on `warisskill-research-methodology` — evaluate, triangulate, and
+calibrate claim strength exactly as that skill describes; this adds the
+four-pillar assessment and the validation methodology specific to
+deciding whether something is worth building.
+
+## Set kill criteria before you start
+
+Write down, up front, what evidence would kill the idea — a TAM below a
+threshold, a competitor that already owns the wedge, a unit-economics
+ceiling that can't clear cost. Decide this before research begins, not
+after findings arrive, so the read of the evidence isn't quietly bent
+toward the answer you'd prefer. If nothing you could find would kill it,
+that's a sign the research isn't being taken seriously.
+
+## The four pillars
+
+Work through all four — a strong market with no technical path, or cheap
+tech with no real demand, are both "no," and only checking one pillar is
+how bad ideas get greenlit.
+
+### 1. Market size & demand
+
+- **Size it two ways and compare.** Top-down (total market × addressable
+  slice) is fast but hand-wavy; bottom-up (realistic unit economics ×
+  plausible customer count you could actually reach) is slower but harder
+  to fool yourself with. If the two disagree by an order of magnitude,
+  trust the bottom-up number and figure out why.
+- **Demand evidence beats market-size math.** A believable TAM with zero
+  evidence anyone wants this specific thing is weaker than a small,
+  confirmed willingness to pay. Look for existing spend on adjacent
+  solutions, search volume, forum complaints about the problem — signals
+  of an existing, expressed need, not a hoped-for one.
+
+### 2. Competitive landscape & differentiation
+
+- Map who already solves this problem, including adjacent/DIY solutions
+  (spreadsheets, manual process) — "no direct competitor" usually means
+  "no proven demand," not "open field."
+- Name the wedge in one sentence: what makes this genuinely hard for an
+  incumbent to copy or a well-funded competitor to steamroll. "We'll
+  execute better" is not a wedge.
+
+### 3. Technical/operational feasibility
+
+- Can this actually be built and *run* (not just demoed) with the
+  team/budget/time available? Ops cost at scale (support load, infra,
+  compliance) is part of this, not an afterthought.
+- Flag any dependency on something not yet proven to work (a model
+  capability, a partner API, a regulatory approval) as a distinct risk —
+  don't fold it into a generic "some technical risk" line.
+
+### 4. Financial viability
+
+- Rough unit economics: cost to acquire vs. value per customer, even at a
+  crude first pass — this kills more bad ideas than any other single
+  number.
+- Runway needed to reach a signal that de-risks the idea (not to
+  profitability) — the question is "how much do we need to spend to know
+  more," not a five-year P&L for something unvalidated.
+
+## Validate against reality, not just desk research
+
+Desk research (the four pillars above) produces a hypothesis, not a
+verdict. Before committing, test it against the real world:
+
+- **Problem interviews before solution interviews.** Talk to the
+  prospective customer about their problem and current workaround before
+  describing your idea — pitching the solution first collects politeness,
+  not signal.
+- **Smoke test demand cheaply.** A landing page with a real call-to-action,
+  a pre-order, a waitlist with a specific ask — something that costs the
+  prospective customer a small amount of real effort or money, not just an
+  opinion.
+- **Scope the MVP to answer the riskiest assumption**, not to ship a
+  polished product. If the riskiest assumption is "will they pay," the MVP
+  is a payment flow, not a full feature set.
+- **Distrust vanity metrics.** Signups, likes, and "I'd totally use that"
+  are weak signal. Money changing hands, real usage, or a signed LOI are
+  strong signal — weight accordingly.
+
+## Deliver a calibrated verdict, not a binary
+
+Per `warisskill-research-methodology`'s claim-strength rule, the output is
+one of, with the specific unresolved risk named:
+
+- **Go** — evidence across all four pillars clears the kill criteria.
+- **Go, with a named caveat** — worth pursuing, but one specific pillar is
+  weak and should be watched or re-tested early.
+- **Not yet — needs validation** — desk research doesn't rule it out, but
+  no real-world evidence exists yet; name the cheapest test that would
+  produce it.
+- **No-go** — name which kill criterion was hit and by what evidence.
+
+## Limitations
+
+- General research discipline (source evaluation, triangulation, claim
+  calibration): `warisskill-research-methodology`.
+- Positioning, messaging, avatar, and copy research once the answer is
+  yes: `marketing-research`.
+- Recording the resulting go/no-go as a significant decision:
+  `warisskill-system-design-decision-making`.

@@ -1,0 +1,84 @@
+---
+description: Use for any research task where the answer depends on external sources — gathering facts, comparing claims, investigating a question, or synthesizing findings across sources, in any domain. This is the foundation the domain-specific research skills build on: `warisskill-research-academic` (literature/scholarly), `marketing-research` (positioning/copy), and `warisskill-research-technical` (libraries/RFCs/ pre-implementation) all defer up to the credibility, triangulation, and claim-strength rules here. Trigger on 'research X,' 'find out whether,' 'what does the evidence say,' or any request that will end in claims sourced from outside the current codebase or conversation.
+alwaysApply: false
+---
+
+
+# Research Methodology
+
+The shared discipline under every kind of research. Domain skills
+(`warisskill-research-academic`, `warisskill-research-technical`,
+`marketing-research`) add source hierarchies and outputs on top of this —
+they don't restate these rules.
+
+## The loop
+
+```
+QUESTION → SEARCH → EVALUATE → TRIANGULATE → SYNTHESIZE → CITE
+```
+
+Skipping EVALUATE and TRIANGULATE is how confident-sounding wrong answers
+happen. They are not optional steps.
+
+## Sharpen the question first
+
+Vague questions produce vague research. Before searching, state what a good
+answer looks like: what decision it feeds, what would change your mind, and
+what counts as in vs out of scope. Write the question down; refine it as
+findings reshape it.
+
+## Evaluate every source
+
+Judge each source before trusting it, on three axes:
+
+| Axis | Ask |
+|---|---|
+| Authority | Who produced this, and are they in a position to know? Primary source, or someone summarizing one? |
+| Recency | When was it published, and does staleness matter for this topic? A 2019 answer about a fast-moving tool is a liability. |
+| Incentive | What does the author gain if you believe them? Vendor content, sponsored study, and ranked listicles are evidence with an asterisk. |
+
+Prefer **primary sources** (the original study, spec, dataset, or code)
+over secondary summaries, and secondary over tertiary aggregations.
+
+## Triangulate — one source is a lead, not a fact
+
+Corroborate any load-bearing claim against **independent** sources. Two
+sources that both trace back to the same origin are one source. A single
+uncorroborated claim can be reported, but it must be labeled as such, never
+laundered into settled fact.
+
+## Calibrate claim strength to evidence
+
+Match your language to how strong the evidence actually is. This is the
+single most important habit — overstating is the most common research
+failure:
+
+| Evidence | Say |
+|---|---|
+| Multiple strong independent sources agree | "established" / state it plainly |
+| Good evidence, some gaps | "the evidence indicates / likely" |
+| Sources disagree | "contested — X argues…, Y argues…" (surface both) |
+| One weak or interested source | "one source claims… (unverified)" |
+| No source, your own reasoning | "I infer / my read is" — never dress inference as a found fact |
+
+## Synthesize, don't just summarize
+
+A list of what each source said is not research. Reconcile them: where do
+they agree, where do they conflict, and *why* — different data, different
+definitions, different eras? Name the disagreement explicitly rather than
+silently picking one side. The value is in the reconciliation.
+
+## Keep it traceable
+
+Every non-obvious claim gets its source attached, so a reader (or future
+you) can verify it. Keep the distinction between "a source says X" and "I
+concluded X" visible throughout — never blur them.
+
+## Limitations
+
+- Domain specifics live in the specialized skills: scholarly source ranking
+  and systematic search in `warisskill-research-academic`; library/doc/RFC
+  evaluation in `warisskill-research-technical`; audience/competitor/
+  positioning research in `marketing-research`.
+- This governs how to research, not how to write the deliverable up — that
+  follows the relevant domain skill's output format.

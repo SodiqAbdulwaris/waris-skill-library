@@ -1,0 +1,106 @@
+---
+name: warisskill-research-technical
+description: >
+  Use for engineering research before or during a build — evaluating
+  libraries and approaches, reading docs/RFCs/source to understand how
+  something works, or running a spike to answer a specific technical
+  question. Triggers on "how do I do X with Y," "which library should I
+  use," "is this approach viable," "spike," or reading unfamiliar APIs.
+  Builds on `warisskill-research-methodology` and complements
+  `warisskill-dependency-management` (whether to add a dependency at all)
+  and `warisskill-system-design-decision-making` (recording a significant
+  choice). This skill is about getting a *reliable* technical answer fast,
+  not about the decision or the dependency ladder themselves.
+---
+
+# Technical & Pre-Implementation Research
+
+Builds on `warisskill-research-methodology`. The high-stakes technical
+failure mode is subtle: an answer that was true for an old version, or that
+a confident blog post got wrong, costs more than no answer. This skill is
+about not getting burned by that.
+
+## Source-trust hierarchy for technical questions
+
+1. **Official docs and the library's own source code, read together, as
+   equal-weight top tier.** Neither is trusted alone — docs describe
+   intent, source is what actually runs, and they can diverge. When they
+   agree, that's the answer. When they disagree, the source wins for
+   *current* behavior, but treat the mismatch itself as a signal (a doc bug
+   worth flagging, or a doc that's ahead of the installed version).
+2. **GitHub Issues, Discussions, and the changelog — near-primary, above
+   community writeups.** This is maintainers talking about the actual
+   project: breaking changes, known bugs, workarounds, and the reasoning
+   behind a design choice. Check here before reaching for a blog or Stack
+   Overflow, not after.
+3. **My (the LLM's) own recalled knowledge — conditionally trusted.** Fine
+   to state directly for stable, widely-known APIs (core language features,
+   long-unchanged library surfaces). For anything version-specific, niche,
+   or from a fast-moving library, treat recall as an unverified hypothesis
+   and check it against current docs/source before relying on it — training
+   data has a cutoff and this is exactly where staleness bites.
+4. **Community writeups — blogs, Stack Overflow, tutorials.** Genuinely
+   useful for how-to patterns, gotchas, and worked examples the official
+   docs don't bother to show. Corroborate against a higher tier before
+   treating as fact, and always check the date against the library's
+   current version.
+5. **Bottom tier, actively discount regardless of recency: AI-generated /
+   SEO-farm tutorials.** Content-mill articles that reword the docs without
+   real understanding, often confidently wrong in small ways. If a search
+   result reads like this, treat it as noise, not as a corroborating
+   source.
+
+## Reading order
+
+Given a source-trust hierarchy, work it top-down: understand the intended
+API from the docs and type signatures first, confirm behavior against
+source/tests when the docs are silent or you doubt them, check issues and
+changelog for known gaps and breaking changes, and only then reach for
+community write-ups to fill remaining holes.
+
+## The version/recency trap
+
+This is where technical research goes wrong most often:
+
+- **Match the doc version to the version you'll actually run.** Docs for
+  `v3` are actively misleading if you're on `v2`. Pin the version in your
+  mind before you read.
+- **Distrust undated or old community answers.** A top-voted Stack Overflow
+  answer from years ago may describe an API that no longer exists. Check
+  the date and cross-check against current docs.
+- **Assume model/training-cutoff drift.** Any recalled-from-memory API
+  detail — including mine — may be stale; verify anything load-bearing
+  against the current official docs before relying on it.
+
+## Spike discipline
+
+When you can't answer from reading and have to try it:
+
+- **Timebox it** and state the specific question the spike must answer.
+- **Treat spike code as throwaway** — its job is to produce a finding, not
+  to become the implementation.
+- **Capture the finding**, and if it settles a significant, hard-to-reverse
+  choice, hand it to `warisskill-system-design-decision-making` to record
+  as an ADR.
+
+## Verify claims in your own context
+
+Don't inherit a blog's benchmark or "X is faster than Y" as fact — it was
+measured on their workload, versions, and hardware. If a performance or
+compatibility claim is load-bearing for your decision, reproduce the
+specific thing you need in your own environment (this hands off to
+`warisskill-performance-optimization`'s measure-first loop).
+
+## Evaluating a library you're researching
+
+When the research is "which library," the *fitness* signals — maintenance
+recency, adoption, bus factor, license, bundle/runtime cost — feed the
+decision, but whether to add a dependency at all is
+`warisskill-dependency-management`'s ladder (stdlib/native/existing dep
+first). Research the candidates; let that skill gate the install.
+
+## Limitations
+
+- Whether a dependency should be added at all: `warisskill-dependency-management`.
+- Recording the resulting significant decision: `warisskill-system-design-decision-making`.
+- General evaluate/triangulate/calibrate discipline: `warisskill-research-methodology`.

@@ -4,6 +4,8 @@ Standing instructions for coding agents (Codex, and other AGENTS.md-aware tools)
 
 These skills encode specific working decisions made through an interview process — apply them as defaults, not suggestions, when their trigger condition matches the current task.
 
+If this machine doesn't have this library or its companion tools (ponytail, Impeccable, Taste) installed yet, run `scripts/bootstrap.sh` (or `scripts/bootstrap.ps1` on Windows PowerShell) from the repo root to install all of them globally before proceeding.
+
 ## UI/UX Design
 
 ### `warisskill-ui-ux-accessibility`
@@ -78,6 +80,12 @@ Full instructions: `skills/warisskill-clean-code-review-etiquette/SKILL.md`
 
 ## Workflows
 
+### `warisskill-workflows-agent-log`
+
+Use at the end of any non-trivial piece of work — a code review performed, a bug root-caused, a decision made along the way, a feature shipped, or a performance/research investigation completed — to record it in this project's running work log under `docs/agent-log/`. Trigger whenever another skill's work produces a real finding or outcome, not for one-off questions, trivial edits, or exploratory back-and-forth that didn't land anywhere. This is a private, untracked work journal — not a substitute for `warisskill-documentation-practices` (README/API docs), `documentation-architect` (formal specs), or `warisskill-system-design-decision-making` (ADRs, which stay their own tracked, explicitly-confirmed artifact in `docs/adr/`).
+
+Full instructions: `skills/warisskill-workflows-agent-log/SKILL.md`
+
 ### `warisskill-workflows-feature-delivery`
 
 Use before declaring any feature or fix complete — the definition-of-done checklist and the hard rule against claiming success without fresh evidence. Trigger on any moment about to state "done," "tests pass," "this works," or similar, and before any commit/PR. This governs what gates completion; warisskill-workflows-planning governs what happens before implementation starts.
@@ -146,6 +154,12 @@ Use when a performance issue is suspected or reported, when profiling is needed,
 
 Full instructions: `skills/warisskill-performance-optimization/SKILL.md`
 
+### `warisskill-react-performance`
+
+Use when writing or reviewing React (or React Native) UI where render behavior matters — a component re-renders too often, a list is long, typing/scroll feels janky, or someone reaches for useMemo/useCallback/ React.memo. Triggers on "this component re-renders too much," "should I memoize this," long-list rendering, context-driven re-render storms, or slow typing in a controlled input. This is narrower than `warisskill-performance-optimization` — that skill owns the general measure-first loop, Core Web Vitals, bundles, and backend/query work. This one owns React's render model specifically. "Should this component exist at all" is ponytail's territory, not this skill's.
+
+Full instructions: `skills/warisskill-react-performance/SKILL.md`
+
 ### `warisskill-security-practices`
 
 Use whenever writing code that touches authentication, secrets, user input, database queries, or external requests — this is a coding- time baseline, not an audit-time-only concern. Trigger on any new endpoint, form, auth flow, database query, or environment-variable usage. Complements the installed /security-review skill, which audits after the fact — this skill governs what gets written correctly the first time, same non-negotiable-baseline treatment as warisskill-ui-ux-accessibility.
@@ -157,6 +171,32 @@ Full instructions: `skills/warisskill-security-practices/SKILL.md`
 Use when deciding what level of automated testing a feature needs beyond unit-level TDD — whether it warrants an E2E test, and what the integration-test bar is for a new API endpoint. Trigger when finishing a critical user flow (auth, checkout, core happy path) or any new endpoint. Complements warisskill-workflows-tdd (unit-level coverage floor) — this skill is the layer above that: E2E and integration test scope.
 
 Full instructions: `skills/warisskill-testing-strategy/SKILL.md`
+
+## Research
+
+### `warisskill-research-academic`
+
+Use for scholarly and literature research — literature reviews, finding and evaluating peer-reviewed work, systematic-style searches, or grounding a claim in the academic record. Triggers on "literature review," "what does the research say," "find papers on," "systematic review," "is this peer-reviewed," or citing scholarly sources. Builds on `warisskill-research-methodology` (credibility, triangulation, claim strength) — this skill adds the scholarly source hierarchy, systematic search discipline, and citation provenance. It does NOT reproduce the heavyweight multi-agent PRISMA machinery some libraries ship; it is a practitioner-grade lightweight discipline.
+
+Full instructions: `skills/warisskill-research-academic/SKILL.md`
+
+### `warisskill-research-methodology`
+
+Use for any research task where the answer depends on external sources — gathering facts, comparing claims, investigating a question, or synthesizing findings across sources, in any domain. This is the foundation the domain-specific research skills build on: `warisskill-research-academic` (literature/scholarly), `marketing-research` (positioning/copy), and `warisskill-research-technical` (libraries/RFCs/ pre-implementation) all defer up to the credibility, triangulation, and claim-strength rules here. Trigger on "research X," "find out whether," "what does the evidence say," or any request that will end in claims sourced from outside the current codebase or conversation.
+
+Full instructions: `skills/warisskill-research-methodology/SKILL.md`
+
+### `warisskill-research-startup-feasibility`
+
+Use when validating whether a new initiative is worth pursuing — a startup idea, a new product line, or an internal build — before committing real time to it. Triggers on "is this idea worth pursuing," "feasibility check," "should we build this," "market size for," or any go/no-go call on something not yet started. Builds on `warisskill-research-methodology` for source discipline. Distinct from `marketing-research`: this skill answers whether to proceed at all; marketing-research answers how to position and sell it once the answer is yes. Distinct from `warisskill-system-design-decision-making`, which records a significant technical choice as an ADR — this skill feeds that one the evidence for a go/no-go call worth recording.
+
+Full instructions: `skills/warisskill-research-startup-feasibility/SKILL.md`
+
+### `warisskill-research-technical`
+
+Use for engineering research before or during a build — evaluating libraries and approaches, reading docs/RFCs/source to understand how something works, or running a spike to answer a specific technical question. Triggers on "how do I do X with Y," "which library should I use," "is this approach viable," "spike," or reading unfamiliar APIs. Builds on `warisskill-research-methodology` and complements `warisskill-dependency-management` (whether to add a dependency at all) and `warisskill-system-design-decision-making` (recording a significant choice). This skill is about getting a *reliable* technical answer fast, not about the decision or the dependency ladder themselves.
+
+Full instructions: `skills/warisskill-research-technical/SKILL.md`
 
 ## Marketing
 
