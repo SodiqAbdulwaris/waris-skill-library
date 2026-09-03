@@ -33,4 +33,43 @@ if (Have npx) {
     try { npx impeccable install } finally { Pop-Location }
 }
 
+function Invoke-WithTimeout($seconds, $scriptBlock) {
+    $job = Start-Job -ScriptBlock $scriptBlock
+    if (Wait-Job $job -Timeout $seconds) { Receive-Job $job } else { Write-Host "(timed out after ${seconds}s, skipping)" }
+    Remove-Job $job -Force
+}
+
+Write-Host "== Native per-tool installs, where documented and confirmed working =="
+$RepoDir = Split-Path -Parent $PSScriptRoot
+
+if (Have agy) {
+    agy plugin install https://github.com/DietrichGebert/ponytail
+    agy plugin install $RepoDir
+} else {
+    Write-Host "agy CLI not found -- skipping Antigravity-native installs (still covered by the universal installers above)"
+}
+
+if (Have codex) {
+    Invoke-WithTimeout 120 { codex plugin marketplace add DietrichGebert/ponytail }
+    Invoke-WithTimeout 120 { codex plugin add ponytail@ponytail }
+    Invoke-WithTimeout 120 { codex plugin marketplace add SodiqAbdulwaris/waris-skill-library }
+    Invoke-WithTimeout 120 { codex plugin add waris-skill-library@waris-skill-library }
+    # impeccable has no working Codex-native marketplace: `codex plugin
+    # marketplace add pbakaus/impeccable` hangs indefinitely (confirmed) --
+    # relies on the universal installers above instead.
+} else {
+    Write-Host "codex CLI not found -- skipping Codex-native installs (still covered by the universal installers above)"
+}
+
+if (Have opencode) {
+    opencode plugin @dietrichgebert/ponytail -g
+    # impeccable, Taste, and this library aren't published npm packages, so
+    # `opencode plugin <npm-module>` doesn't apply to them -- they rely on the
+    # universal installers above for OpenCode instead.
+} else {
+    Write-Host "opencode CLI not found -- skipping OpenCode-native ponytail install"
+}
+
+Write-Host "Cursor has no native CLI plugin-install command (per ponytail's own docs -- file-copy only); already covered by the universal installers above."
+
 Write-Host "Done. Re-run this script any time to pick up updates to any of the above."

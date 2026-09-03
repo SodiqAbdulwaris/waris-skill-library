@@ -34,4 +34,37 @@ if have npx; then
   (cd "$HOME" && npx impeccable install) || true
 fi
 
+echo "== Native per-tool installs, where documented and confirmed working =="
+REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+if have agy; then
+  agy plugin install https://github.com/DietrichGebert/ponytail || true
+  agy plugin install "$REPO_DIR" || true
+else
+  echo "agy CLI not found — skipping Antigravity-native installs (still covered by the universal installers above)"
+fi
+
+if have codex; then
+  timeout 120 codex plugin marketplace add DietrichGebert/ponytail || true
+  timeout 120 codex plugin add ponytail@ponytail || true
+  timeout 120 codex plugin marketplace add SodiqAbdulwaris/waris-skill-library || true
+  timeout 120 codex plugin add waris-skill-library@waris-skill-library || true
+  # impeccable has no working Codex-native marketplace: `codex plugin
+  # marketplace add pbakaus/impeccable` hangs indefinitely (confirmed) —
+  # relies on the universal installers above instead.
+else
+  echo "codex CLI not found — skipping Codex-native installs (still covered by the universal installers above)"
+fi
+
+if have opencode; then
+  opencode plugin @dietrichgebert/ponytail -g || true
+  # impeccable, Taste, and this library aren't published npm packages, so
+  # `opencode plugin <npm-module>` doesn't apply to them — they rely on the
+  # universal installers above for OpenCode instead.
+else
+  echo "opencode CLI not found — skipping OpenCode-native ponytail install"
+fi
+
+echo "Cursor has no native CLI plugin-install command (per ponytail's own docs — file-copy only); already covered by the universal installers above."
+
 echo "Done. Re-run this script any time to pick up updates to any of the above."
